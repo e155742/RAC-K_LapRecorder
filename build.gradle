@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'application'
+}
+
+mainClassName = 'net.rack.Main'
+tasks.withType(JavaCompile){ options.encoding = 'UTF-8' }
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+jar {
+    manifest {
+        attributes "Main-Class" : mainClassName
+    }
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
