@@ -35,7 +35,7 @@ public class Timer {
   public long getRunTime() {
     return runTime;
   }
-  
+
   public void reset() {
     startTime = 0;
     runTime = 0;

@@ -354,37 +354,17 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     setTimeTextField(Timer.ZERO_TIME);
   }
 
-  private boolean pressLeftShiftKey  = false;
-  private boolean pressRightShiftKey = false;
-
   // @Override
   public void nativeKeyPressed(NativeKeyEvent e) {
-    int keyCode = e.getKeyCode();
-
-    if (keyCode == NativeKeyEvent.VC_SHIFT_L) { // シフトキー
-      pressLeftShiftKey = true;
-      return;
-    } else if (e.getKeyCode() == NativeKeyEvent.VC_SHIFT_R) {
-      pressRightShiftKey = true;
-      return;
-    }
-
-    if (keyCode == NativeKeyEvent.VC_KP_DIVIDE || keyCode == NativeKeyEvent.VC_SLASH) { // スタートキー (/)
+    if (e.getKeyCode() == NativeKeyEvent.VC_KP_DIVIDE) {          // スタートキー (/)
       startEvent();
-    } else if (keyCode == NativeKeyEvent.VC_KP_MULTIPLY
-           || ((pressLeftShiftKey || pressRightShiftKey) && keyCode == NativeKeyEvent.VC_SEMICOLON)) { // ゴールキー (*)
+    } else if (e.getKeyCode() == NativeKeyEvent.VC_KP_MULTIPLY) { //   ゴールキー (*)
       goalEvent();
     }
   }
 
   // @Override
   public void nativeKeyReleased(NativeKeyEvent e) {
-    int keyCode = e.getKeyCode();
-    if (keyCode == NativeKeyEvent.VC_SHIFT_L) {
-      pressLeftShiftKey = false;
-    } else if (keyCode == NativeKeyEvent.VC_SHIFT_R) {
-      pressRightShiftKey = false;
-    }
   }
 
   // @Override
