@@ -5,7 +5,6 @@ RAC-K LapRecorder
 更新日:2018年2月4日  
   
 作成環境  
-Windows 7 SP1
 Javac 1.8.0_161  
 target 1.5  
 gradle 4.5  

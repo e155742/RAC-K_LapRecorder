@@ -92,7 +92,6 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
       System.exit(-1);
     }
     GlobalScreen.addNativeKeyListener(this);
-
   }
 
   public void changeFontSize(int fontSize) {
@@ -325,6 +324,9 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
   }
 
   public void startEvent() {
+    if (timer.getIsRunning()) {
+      return;
+    }
     timer.starter();
     Thread thread = new Thread(MyFrame.this);
     thread.start();
@@ -359,17 +361,18 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
   public void nativeKeyPressed(NativeKeyEvent e) {
     int keyCode = e.getKeyCode();
 
-    if (keyCode == 42) { // シフトキー
+    if (keyCode == NativeKeyEvent.VC_SHIFT_L) { // シフトキー
       pressLeftShiftKey = true;
       return;
-    } else if (e.getKeyCode() == 54) {
+    } else if (e.getKeyCode() == NativeKeyEvent.VC_SHIFT_R) {
       pressRightShiftKey = true;
       return;
     }
 
-    if (keyCode == 3637 || keyCode == 53) { // スタートキー (/)
+    if (keyCode == NativeKeyEvent.VC_KP_DIVIDE || keyCode == NativeKeyEvent.VC_SLASH) { // スタートキー (/)
       startEvent();
-    } else if (keyCode == 55 || ((pressLeftShiftKey || pressRightShiftKey) && keyCode == 39)) { // ゴールキー (*)
+    } else if (keyCode == NativeKeyEvent.VC_KP_MULTIPLY
+           || ((pressLeftShiftKey || pressRightShiftKey) && keyCode == NativeKeyEvent.VC_SEMICOLON)) { // ゴールキー (*)
       goalEvent();
     }
   }
@@ -377,9 +380,9 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
   // @Override
   public void nativeKeyReleased(NativeKeyEvent e) {
     int keyCode = e.getKeyCode();
-    if (keyCode == 42) {
+    if (keyCode == NativeKeyEvent.VC_SHIFT_L) {
       pressLeftShiftKey = false;
-    } else if (keyCode == 54) {
+    } else if (keyCode == NativeKeyEvent.VC_SHIFT_R) {
       pressRightShiftKey = false;
     }
   }
