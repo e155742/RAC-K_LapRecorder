@@ -2,12 +2,13 @@ RAC-K LapRecorder
 ====
 
 制作日:2017年3月3日  
-更新日:2018年2月2日  
+更新日:2018年2月4日  
   
 作成環境  
-OS X 10.12.6  
+Windows 7 SP1
 Javac 1.8.0_161  
 target 1.5  
+gradle 4.5  
   
 Javaが入っていれば動くはずです。  
 Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビルドできません。  
@@ -15,7 +16,7 @@ Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビ
 下段が現在計測中のタイム、中段が一つ前に計測したタイム、上段が二つ前に計測したタイムです。右側のテーブルが過去のログです。コピー機能等は面倒なのでつけてません。  
 スラッシュキー(/)がスタート、アスタリスクキー(\*)がゴールに対応しています。  
 リセットボタンを押すと現在の計測を中止します。記録にも残しません。メニューの完全リセットを押すと過去のログも全削除します。  
-ウィンドウが非アクティブの時は反応しません。注意してください。  
+**ウィンドウが非アクティブの時でも反応します。スラッシュキー(/)、アスタリスクキー(\*)を入力する際は気をつけてください。**  
   
 ~~稀に結果が二重に表示されます。(例: X:YY:ZZZ が、 X:YY:ZZZX:YY:ZZZ となる)  
 他にも時々表示が崩れます。~~ 解決しました。(多分)  
@@ -25,4 +26,8 @@ Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビ
 精度はOS依存ですが、その誤差よりUSBのフレーム周期のほうが大きいので気にしなくていいです。  
 設定の「更新頻度」は精度とは関係ありません。速くしても遅くしても結果タイムは同じです。  
   
-[ダウンロード](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.0.0/RAC-K-LapRecorder.jar "RAC-K-LapRecorder.jar")
+#### 依存ライブラリ
+[JNativeHook v2.0.3](https://github.com/kwhat/jnativehook/releases/tag/2.0.3 "https://github.com/kwhat/jnativehook/releases/tag/2.0.3")  
+  
+### ダウンロード
+**[RAC-K-LapRecorder.jar](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.0.0/RAC-K-LapRecorder.jar "RAC-K-LapRecorder.jar")**  

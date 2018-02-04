@@ -10,6 +10,15 @@ tasks.withType(JavaCompile){ options.encoding = 'UTF-8' }
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // compile files('lib/JNativeHook-2.0.3/JNativeHook-2.0.3.jar') // GPLv3
+    compile 'com.1stleg:jnativehook:2.0.3'
+}
+
 jar {
   manifest {
     attributes "Main-Class" : mainClassName

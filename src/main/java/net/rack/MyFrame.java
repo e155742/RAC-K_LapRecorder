@@ -6,13 +6,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -31,12 +29,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
 /**
  * @author e155742
  *
  */
 @SuppressWarnings("serial")
-public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListener {
+public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
   public static final String FONT_NAME               = "Sans";
   public static final int    FONT_STYLE              = Font.BOLD;
   public static final int    DEFAULT_FONT_SIZE_INDEX = 1;
@@ -60,7 +63,7 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     }
   };
 
-  private JTable    timeLogTable         = new JTable(tableModel);                      // タイム表示横
+  private JTable    timeLogTable         = new JTable(tableModel); // タイム表示横
   private Font      font                 = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
   private int       logCount             = 0;
   private int       updateInterval       = 77;
@@ -75,7 +78,21 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     createButtons();
     createTable();
     setFocusable(true);
-    addKeyListener(this);
+
+    final Logger jNativeHookLogger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+    if (jNativeHookLogger.getLevel() != Level.WARNING) {
+      synchronized (jNativeHookLogger) {
+        jNativeHookLogger.setLevel(Level.WARNING);
+      }
+    }
+    try {
+      GlobalScreen.registerNativeHook();
+    } catch (NativeHookException e) {
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    GlobalScreen.addNativeKeyListener(this);
+
   }
 
   public void changeFontSize(int fontSize) {
@@ -134,7 +151,6 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     JMenuBar menubar = new JMenuBar();
     JMenu menu = new JMenu("メニュー");
     menubar.add(menu);
-    menu.addMouseListener(this);
 
     JMenu fontSizeMenu = new JMenu("フォントサイズ");
     JMenu intervalMenu = new JMenu("更新頻度");
@@ -235,7 +251,6 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     buttonList.add(resetButton);
     for (JButton buttons : buttonList) {
       buttons.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-      buttons.addMouseListener(this);
       panel.add(buttons);
     }
     panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -258,7 +273,6 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
       timeTextField[i].setOpaque(false);
       timeTextField[i].setFont(font);
       panel.add(timeTextField[i]);
-      timeTextField[i].addMouseListener(this);
     }
     contentPane.add(panel, BorderLayout.CENTER);
   }
@@ -273,8 +287,6 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     timeLogTable.setFont(new Font(FONT_NAME, Font.PLAIN, LOG_FONT_SIZE));
     timeLogTable.getColumnModel().getColumn(0).setPreferredWidth(30);
     panel.add(scrollPane);
-    timeLogTable.addMouseListener(this);
-    scrollPane.addMouseListener(this); // 念のため
     contentPane.add(panel, BorderLayout.EAST);
   }
 
@@ -340,44 +352,40 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     setTimeTextField(Timer.ZERO_TIME);
   }
 
-  // @Override
-  public void keyPressed(KeyEvent e) {
-  }
+  private boolean pressLeftShiftKey  = false;
+  private boolean pressRightShiftKey = false;
 
   // @Override
-  public void keyReleased(KeyEvent e) {
-  }
+  public void nativeKeyPressed(NativeKeyEvent e) {
+    int keyCode = e.getKeyCode();
 
-  // @Override
-  public void keyTyped(KeyEvent e) {
-    if (e.getKeyChar() == '/') {
+    if (keyCode == 42) { // シフトキー
+      pressLeftShiftKey = true;
+      return;
+    } else if (e.getKeyCode() == 54) {
+      pressRightShiftKey = true;
+      return;
+    }
+
+    if (keyCode == 3637 || keyCode == 53) { // スタートキー (/)
       startEvent();
-    } else if (e.getKeyChar() == '*') {
+    } else if (keyCode == 55 || ((pressLeftShiftKey || pressRightShiftKey) && keyCode == 39)) { // ゴールキー (*)
       goalEvent();
     }
   }
 
   // @Override
-  public void mouseEntered(MouseEvent e) {
+  public void nativeKeyReleased(NativeKeyEvent e) {
+    int keyCode = e.getKeyCode();
+    if (keyCode == 42) {
+      pressLeftShiftKey = false;
+    } else if (keyCode == 54) {
+      pressRightShiftKey = false;
+    }
   }
 
   // @Override
-  public void mouseExited(MouseEvent e) {
-  }
-
-  // @Override
-  public void mouseClicked(MouseEvent e) {
-    requestFocus();
-  }
-
-  // @Override
-  public void mousePressed(MouseEvent e) {
-    requestFocus();
-  }
-
-  // @Override
-  public void mouseReleased(MouseEvent e) {
-    requestFocus();
+  public void nativeKeyTyped(NativeKeyEvent e) {
   }
 
   /**
@@ -394,4 +402,5 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
       }
     }
   }
+
 }
