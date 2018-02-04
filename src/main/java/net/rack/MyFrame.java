@@ -37,12 +37,13 @@ import javax.swing.table.DefaultTableModel;
  */
 @SuppressWarnings("serial")
 public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListener {
-  public static final String FONT_NAME     = "Sans";
-  public static final int    FONT_STYLE    = Font.BOLD;
-  public static final int    FONT_SIZE     = 108;
-  public static final int    LOG_FONT_SIZE = 16;       // 右側の記録テーブルのフォントサイズ
-  public static final int    BUTTON_WIDTH  = 150;
-  public static final int    BUTTON_HEIGHT = 50;
+  public static final String FONT_NAME               = "Sans";
+  public static final int    FONT_STYLE              = Font.BOLD;
+  public static final int    DEFAULT_FONT_SIZE_INDEX = 1;
+  public static final int[]  FONT_SIZE               = { 72, 108, 144, 180, 216 };
+  public static final int    LOG_FONT_SIZE           = 16;                        // 右側の記録テーブルのフォントサイズ
+  public static final int    BUTTON_WIDTH            = 150;
+  public static final int    BUTTON_HEIGHT           = 50;
 
   Timer timer = new Timer();
 
@@ -59,11 +60,10 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
     }
   };
 
-  private JTable timeLogTable = new JTable(tableModel);                    // タイム表示横
-  private Font   font         = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE);
-
-  private int logCount       = 0;
-  private int updateInterval = 77;
+  private JTable    timeLogTable         = new JTable(tableModel);                      // タイム表示横
+  private Font      font                 = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
+  private int       logCount             = 0;
+  private int       updateInterval       = 77;
 
   public MyFrame(String title, int widht, int eight) {
     setTitle(title);
@@ -173,12 +173,10 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
 
     // フォントサイズ
     List<JMenuItem> fontSizeItemList = new ArrayList<JMenuItem>();
-    fontSizeItemList.add(fontSizeItem(216));
-    fontSizeItemList.add(fontSizeItem(180));
-    fontSizeItemList.add(fontSizeItem(144));
-    fontSizeItemList.add(fontSizeItem(108));
-    fontSizeItemList.add(fontSizeItem(72));
-    fontSizeItemList.get(3).setSelected(true);
+    for (int fontSizes : FONT_SIZE) {
+      fontSizeItemList.add(fontSizeItem(fontSizes));
+    }
+    fontSizeItemList.get(DEFAULT_FONT_SIZE_INDEX).setSelected(true);
 
     ButtonGroup fonsSizeGroup = new ButtonGroup();
     for (JMenuItem fontSizeItemLists : fontSizeItemList) {
@@ -189,8 +187,8 @@ public class MyFrame extends JFrame implements Runnable, KeyListener, MouseListe
 
     // 更新頻度
     List<JMenuItem> updateItemList = new ArrayList<JMenuItem>();
-    updateItemList.add(updateItem(37, "速い"));
-    updateItemList.add(updateItem(77, "普通"));
+    updateItemList.add(updateItem(37,  "速い"));
+    updateItemList.add(updateItem(77,  "普通"));
     updateItemList.add(updateItem(117, "遅い"));
     updateItemList.get(1).setSelected(true);
 
