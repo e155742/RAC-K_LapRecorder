@@ -1,21 +1,30 @@
 plugins {
-    id 'java'
-    id 'eclipse'
-    id 'application'
+  id 'java'
+  id 'eclipse'
+  id 'application'
 }
 
 mainClassName = 'net.rack.Main'
 tasks.withType(JavaCompile){ options.encoding = 'UTF-8' }
 
-version = '1.0.0'
+version = '1.1.0b1'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  // compile files('lib/JNativeHook-2.0.3/JNativeHook-2.0.3.jar') // GPLv3
+  compile 'com.1stleg:jnativehook:2.0.3'
+}
+
 jar {
-    baseName = 'RAC-K_LapRecorder'
-    manifest {
-        attributes "Main-Class" : mainClassName
-    }
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  baseName = 'RAC-K_LapRecorder'
+  manifest {
+    attributes "Main-Class" : mainClassName
+  }
+  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
