@@ -7,7 +7,7 @@ RAC-K LapRecorder
 作成環境  
 jdk1.8.0_161  
 target 1.5  
-gradle 4.5  
+Gradle 4.5  
   
 Javaが入っていれば動くはずです。  
 Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビルドできません。  
@@ -29,4 +29,4 @@ Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビ
 [JNativeHook v2.0.3](https://github.com/kwhat/jnativehook/releases/tag/2.0.3 "https://github.com/kwhat/jnativehook/releases/tag/2.0.3")  
   
 ### ダウンロード
-**[RAC-K-LapRecorder.jar](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.0.0/RAC-K-LapRecorder.jar "RAC-K-LapRecorder.jar")**  
+**[RAC-K_LapRecorder-1.1.0b1.jar](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.1.0b1/RAC-K_LapRecorder-1.1.0b1.jar "RAC-K_LapRecorder-1.1.0b1.jar.jar")**  
