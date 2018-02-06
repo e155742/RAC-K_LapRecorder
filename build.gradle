@@ -7,10 +7,13 @@ plugins {
 mainClassName = 'net.rack.Main'
 tasks.withType(JavaCompile){ options.encoding = 'UTF-8' }
 
+version = '1.0.0'
+
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
 jar {
+    baseName = 'RAC-K_LapRecorder'
     manifest {
         attributes "Main-Class" : mainClassName
     }

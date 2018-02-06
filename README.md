@@ -5,9 +5,9 @@ RAC-K LapRecorder
 更新日:2018年2月2日  
   
 作成環境  
-OS X 10.12.6  
-Javac 1.8.0_161  
+jdk1.8.0_161  
 target 1.5  
+Gradle 4.5  
   
 Javaが入っていれば動くはずです。  
 Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビルドできません。  
@@ -25,4 +25,4 @@ Gradleでビルドできます。Java9だとtargetを1.6以上にしないとビ
 精度はOS依存ですが、その誤差よりUSBのフレーム周期のほうが大きいので気にしなくていいです。  
 設定の「更新頻度」は精度とは関係ありません。速くしても遅くしても結果タイムは同じです。  
   
-[ダウンロード](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.0.0/RAC-K-LapRecorder.jar "RAC-K-LapRecorder.jar")
+[ダウンロード](https://github.com/e155742/RAC-K_LapRecorder/releases/download/v1.0.0/RAC-K_LapRecorder-1.0.0.jar "RAC-K_LapRecorder-1.0.0.jar")
