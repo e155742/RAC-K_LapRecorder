@@ -63,10 +63,11 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     }
   };
 
-  private JTable    timeLogTable         = new JTable(tableModel); // タイム表示横
-  private Font      font                 = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
-  private int       logCount             = 0;
-  private int       updateInterval       = 77;
+  private JTable timeLogTable      = new JTable(tableModel);                                             // タイム表示横
+  private Font   font              = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
+  private int    logCount          = 0;
+  private int[]  updateInterval    = { 33, 77, 117 };
+  private int    nowUpdateInterval = updateInterval[1];
 
   public MyFrame(String title, int widht, int eight) {
     setTitle(title);
@@ -136,7 +137,7 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     return new JRadioButtonMenuItem(new AbstractAction(itemName) {
       // @Override
       public void actionPerformed(ActionEvent e) {
-        updateInterval = time;
+        nowUpdateInterval = time;
       }
     });
   }
@@ -327,6 +328,12 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     if (timer.getIsRunning()) {
       return;
     }
+
+    if (!timeTextField[0].getText().equals(Timer.ZERO_TIME)) {
+      for (int i = timeTextField.length - 1; i > 0; i--) {
+        timeTextField[i].setText(timeTextField[i - 1].getText());
+      }
+    }
     timer.starter();
     Thread thread = new Thread(MyFrame.this);
     thread.start();
@@ -338,10 +345,8 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     }
     timer.stopper();
     String timeStr = timeFormatting(timer.getRunTime());
+
     setTimeTextField(timeStr);
-    for (int i = timeTextField.length - 1; i > 0; i--) {
-      timeTextField[i].setText(timeTextField[i - 1].getText());
-    }
 
     tableModel.addRow(new Object[] { ++logCount, timeStr });
     int n = timeLogTable.convertRowIndexToView(tableModel.getRowCount() - 1);
@@ -379,7 +384,7 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     while (timer.getIsRunning()) {
       setTimeTextField(timeFormatting(System.nanoTime() - timer.getStartTime()));
       try {
-        Thread.sleep(updateInterval);
+        Thread.sleep(nowUpdateInterval);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
