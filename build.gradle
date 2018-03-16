@@ -7,7 +7,7 @@ plugins {
 mainClassName = 'net.rack.Main'
 tasks.withType(JavaCompile){ options.encoding = 'UTF-8' }
 
-version = '1.1.0b1'
+version = '1.2.0b1'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
