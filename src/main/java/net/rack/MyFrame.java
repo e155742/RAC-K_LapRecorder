@@ -52,9 +52,8 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
 
   private Container contentPane = getContentPane();
 
-  private JTextField[] timeTextField = { new JTextField(Timer.ZERO_TIME),
-                                         new JTextField(Timer.ZERO_TIME),
-                                         new JTextField(Timer.ZERO_TIME) };
+  private JTextField[] timeTextField = { new JTextField(Timer.ZERO_TIME), new JTextField(Timer.ZERO_TIME),
+      new JTextField(Timer.ZERO_TIME) };
 
   private DefaultTableModel tableModel = new DefaultTableModel(new String[] { "", "" }, 0) {
     @Override
@@ -63,10 +62,11 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     }
   };
 
-  private JTable    timeLogTable         = new JTable(tableModel); // タイム表示横
-  private Font      font                 = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
-  private int       logCount             = 0;
-  private int       updateInterval       = 77;
+  private JTable timeLogTable      = new JTable(tableModel);                                             // タイム表示横
+  private Font   font              = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE[DEFAULT_FONT_SIZE_INDEX]);
+  private int    logCount          = 0;
+  private int[]  updateInterval    = { 33, 77, 117 };
+  private int    nowUpdateInterval = updateInterval[1];
 
   public MyFrame(String title, int widht, int eight) {
     setTitle(title);
@@ -136,7 +136,7 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     return new JRadioButtonMenuItem(new AbstractAction(itemName) {
       // @Override
       public void actionPerformed(ActionEvent e) {
-        updateInterval = time;
+        nowUpdateInterval = time;
       }
     });
   }
@@ -202,8 +202,8 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
 
     // 更新頻度
     List<JMenuItem> updateItemList = new ArrayList<JMenuItem>();
-    updateItemList.add(updateItem(37,  "速い"));
-    updateItemList.add(updateItem(77,  "普通"));
+    updateItemList.add(updateItem(37, "速い"));
+    updateItemList.add(updateItem(77, "普通"));
     updateItemList.add(updateItem(117, "遅い"));
     updateItemList.get(1).setSelected(true);
 
@@ -237,6 +237,13 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
       }
     });
 
+    JButton missCourseButton = new JButton(new AbstractAction("ミスコース") {
+      // @Override
+      public void actionPerformed(ActionEvent e) {
+        missCourseEvent();
+      }
+    });
+
     JButton resetButton = new JButton(new AbstractAction("リセット") {
       // @Override
       public void actionPerformed(ActionEvent e) {
@@ -247,6 +254,7 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     List<JButton> buttonList = new ArrayList<JButton>();
     buttonList.add(startButton);
     buttonList.add(goalButton);
+    buttonList.add(missCourseButton);
     buttonList.add(resetButton);
     for (JButton buttons : buttonList) {
       buttons.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
@@ -327,6 +335,12 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     if (timer.getIsRunning()) {
       return;
     }
+
+    if (!timeTextField[0].getText().equals(Timer.ZERO_TIME)) {
+      for (int i = timeTextField.length - 1; i > 0; i--) {
+        timeTextField[i].setText(timeTextField[i - 1].getText());
+      }
+    }
     timer.starter();
     Thread thread = new Thread(MyFrame.this);
     thread.start();
@@ -338,12 +352,30 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     }
     timer.stopper();
     String timeStr = timeFormatting(timer.getRunTime());
+
     setTimeTextField(timeStr);
-    for (int i = timeTextField.length - 1; i > 0; i--) {
-      timeTextField[i].setText(timeTextField[i - 1].getText());
-    }
 
     tableModel.addRow(new Object[] { ++logCount, timeStr });
+    moveScroll();
+  }
+
+  public void missCourseEvent() {
+    String missStr = "MISS";
+    if (!timer.getIsRunning() && 0 < tableModel.getRowCount()) {
+      tableModel.setValueAt(missStr, tableModel.getRowCount() - 1, 1);
+    } else {
+      tableModel.addRow(new Object[] { ++logCount, missStr });
+    }
+
+    timer.reset();
+    setTimeTextField(missStr);
+    moveScroll();
+  }
+
+  /**
+   * スクロールの位置を一番下にする
+   */
+  private void moveScroll() {
     int n = timeLogTable.convertRowIndexToView(tableModel.getRowCount() - 1);
     Rectangle r = timeLogTable.getCellRect(n, 0, true);
     timeLogTable.scrollRectToVisible(r);
@@ -356,9 +388,9 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
 
   // @Override
   public void nativeKeyPressed(NativeKeyEvent e) {
-    if (e.getKeyCode() == NativeKeyEvent.VC_KP_DIVIDE) {          // スタートキー (/)
+    if (e.getKeyCode() == NativeKeyEvent.VC_KP_DIVIDE) { // スタートキー (/)
       startEvent();
-    } else if (e.getKeyCode() == NativeKeyEvent.VC_KP_MULTIPLY) { //   ゴールキー (*)
+    } else if (e.getKeyCode() == NativeKeyEvent.VC_KP_MULTIPLY) { // ゴールキー (*)
       goalEvent();
     }
   }
@@ -379,7 +411,7 @@ public class MyFrame extends JFrame implements Runnable, NativeKeyListener {
     while (timer.getIsRunning()) {
       setTimeTextField(timeFormatting(System.nanoTime() - timer.getStartTime()));
       try {
-        Thread.sleep(updateInterval);
+        Thread.sleep(nowUpdateInterval);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

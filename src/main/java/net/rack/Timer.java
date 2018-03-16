@@ -18,7 +18,7 @@ public class Timer {
   public long getStartTime() {
     return startTime;
   }
-  
+
   public boolean getIsRunning() {
     return isRunning;
   }
